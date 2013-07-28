@@ -153,10 +153,11 @@ def circle(x, y, size):
    oval(x-size/2, y-size/2, size, size)           
             
 class Message(object):
-   def _init_(self, sms_id):
-       self.width = 300
+   def __init__(self, sms_id):
+       self.width = 900
+       self.height = 600
        self.x = canvas.width / 3
-       self.y = canvas.height / 3
+       self.y = 100
        self.dx = self.dy = self.ds = 0.0
        self.color = color(random(), 1, random(0,2), random())
        self.sms_id = sms_id
@@ -168,20 +169,20 @@ class Message(object):
 
    def form_Message(self):
        if self.number.seller:
-           self.message = self.date + '\n"' + str(self.number.seller) + ' agamba: "' + self.body + '"'
+           givenName = str(self.number.seller.givenName)
+           familyName = str(self.number.seller.familyName)
+           name = givenName + ' ' + familyName
+           self.message = self.date + '\n' + str(name) + ' agamba: "' + self.body + '"'
        else:
            self.message = self.date + '\n"' + self.body + '"'
        return self.message
        
    def update(self):
-       self.dx = sin(FRAME/float(random(1,100))) * 20.0
-       self.dy = cos(FRAME/float(random(1,100))) * 20.0
-       self.ds = cos(FRAME/float(random(1,123))) * 10.0
+       self.x = 600
 
    # Draw a ball: set the fill color first and draw a circle.
    def draw(self):
-       fill(self.color)
-       text(self.message, 
+       text(self.message, x=self.x, y=self.y, width=self.width,
            font = "Droid Serif", 
            fontsize = 30, 
            fontweight = BOLD,
@@ -194,34 +195,33 @@ def get_Image(sms_id):
     seller = str(number.seller.givenName)
     path = "../_animationFiles/_images/" + seller + ".jpg"
     woman = Image(path)
-    return woman    
-
-def setup_SMS_ID_LIST():
-    global SMS_ID_LIST
-    global INDEX
-    SMS_ID_LIST = []
-    INDEX = 0
-    for sms in SMS.select().order_by(SMS.createdAt):
-        if (sms.number.number != 180):
-            if (sms.number.number != 0):
-                if (sms.number.number != 256774712133):
-                    if (sms.number.number != 14845575821):
-                        sms_list = []
-                        sms_list.append(sms.id)
-                        sms_list.append(sms.createdAt)
-                        SMS_ID_LIST.append(sms_list)
-                    else:
-                        print '14845575821'
+    return woman  
+    
+global SMS_ID_LIST
+global INDEX
+SMS_ID_LIST = []
+INDEX = 0
+for sms in SMS.select().order_by(SMS.createdAt):
+    if (sms.number.number != 180):
+        if (sms.number.number != 0):
+            if (sms.number.number != 256774712133):
+                if (sms.number.number != 14845575821):
+                    sms_list = []
+                    sms_list.append(sms.id)
+                    sms_list.append(sms.createdAt)
+                    SMS_ID_LIST.append(sms_list)
                 else:
-                    print '256774712133'
+                    print '14845575821'
             else:
-                print '0'
+                print '256774712133'
         else:
-            print '180'
-    return SMS_ID_LIST
+            print '0'
+    else:
+        print '180'
+print SMS_ID_LIST
     
     
-def draw():
+def draw(canvas):
     global SMS_ID_LIST
     global INDEX
     max_index = len(SMS_ID_LIST) - 1
@@ -239,10 +239,13 @@ def draw():
         sms_interval_fake = (sms_interval_real_seconds/in_between)*float(150)
         print "SMS_INTERVAL_FAKE: " + str(sms_interval_fake)
         message = Message(sms_id)
+        message.form_Message()
         message.draw()
         INDEX += 1
         print "SMS_INTERVAL_FAKE: " + str(sms_interval_fake)
         time.sleep(sms_interval_fake)
+        message.update()
+        message.draw()
     else:
         sms_id = SMS_ID_LIST[max_index][0]
         message = Message(sms_id)
@@ -252,4 +255,4 @@ def draw():
 # canvas.fullscreen = True
 canvas.size = 1680, 1050
 # canvas.fps = 1
-# canvas.run(draw)
+canvas.run(draw)
