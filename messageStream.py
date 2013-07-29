@@ -182,9 +182,9 @@ class Message(object):
    def set_Rest(self, rest):
        self.rest = rest
        
-   def update(self):
-       self.dx = sin(FRAME/float(random(1,100))) * 20.0
-       self.dy = cos(FRAME/float(random(1,100))) * 20.0
+   def update(self, x, y):
+       self.x = x
+       self.y = y
 
    # Draw a ball: set the fill color first and draw a circle.
    def draw(self):
@@ -269,10 +269,11 @@ def draw(canvas):
     # translate(0, HEIGHT-FRAME)
     if ML_INDEX < max_index:
         message = MESSAGE_LIST[ML_INDEX]
-        message.update()
         message.draw()
         print 'should have drawn message'
         time.sleep(message.rest)
+        message.update(300, 300)
+        message.draw()
         print 'done resting'
         ML_INDEX += 1
     else:
