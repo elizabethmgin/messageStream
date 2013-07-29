@@ -155,12 +155,11 @@ FRAME = canvas.frame
             
 class Message(object):
    def __init__(self, sms_id):
-       self.width = 900
-       self.height = 600
+       self.width = 1000
        self.x = 300
-       self.y = 100
+       self.y = 900
        self.dx = self.dy = 0.0
-       self.color = color(random(), 1, random(0,2), random())
+       self.color = color(1, random(100, 110), random(100,110), .9)
        self.sms_id = sms_id
        self.sms = SMS.get(SMS.id == self.sms_id)
        self.number = Number.get(Number.number == self.sms.number.number)
@@ -182,8 +181,7 @@ class Message(object):
    def set_Rest(self, rest):
        self.rest = rest
        
-   def update(self, x, y):
-       self.x = x
+   def update(self, y):
        self.y = y
        
    def white(self):
@@ -193,7 +191,7 @@ class Message(object):
    def draw(self):
        text(self.message, x=self.x, y=self.y, width=self.width,
            font = "Droid Serif", 
-           fontsize = 30, 
+           fontsize = 24, 
            fontweight = BOLD,
            lineheight = 1.9,
            fill = self.color)
@@ -243,7 +241,7 @@ for sms in SMS_ID_LIST:
         print "SMS_INTERVAL_REAL: " + str(sms_interval_real)
         sms_interval_real_seconds = float(sms_interval_real.total_seconds())
         print "SMS_INTERVAL_REAL_SECONDS: " + str(sms_interval_real_seconds)
-        sms_interval_fake = (sms_interval_real_seconds/in_between)*float(150)
+        sms_interval_fake = (sms_interval_real_seconds/in_between)*float(300)
         print "SMS_INTERVAL_FAKE: " + str(sms_interval_fake)
         message = Message(sms_id)
         message.form_Message()
@@ -261,30 +259,54 @@ for sms in SMS_ID_LIST:
         print "MESSAGE_LIST: " + str(MESSAGE_LIST)
         
 global ML_INDEX
+global Y_MOVE
 ML_INDEX = 0
+Y_MOVE = 900
 def draw(canvas):
     global MESSAGE_LIST
     global HEIGHT
     global FRAME
     global ML_INDEX
+    global Y_MOVE
     seed(1)
     max_index = len(MESSAGE_LIST) - 1
     # translate(0, HEIGHT-FRAME)
     if ML_INDEX < max_index:
-        message = MESSAGE_LIST[ML_INDEX]
-        message.draw()
-        # c = message.copy()
-        print 'should have drawn message'
-        time.sleep(message.rest)
-        # message.white()
-        # message.draw()
-        message.update(300, 300)
-        message.draw()
-        print 'done resting'
-        ML_INDEX += 1
+        if Y_MOVE < 0:
+            print 'within if Y_MOVE < 0'
+            canvas.clear()
+            message = MESSAGE_LIST[ML_INDEX]
+            message.draw()
+            print 'should have drawn message'
+            time.sleep(message.rest)
+            print 'done resting'
+            ML_INDEX += 1
+            Y_MOVE = 700
+            print 'Y_MOVE: ' + str(Y_MOVE)
+        elif Y_MOVE == 900:
+            print 'within elif Y_MOVE == 900'
+            message = MESSAGE_LIST[ML_INDEX]
+            message.draw()
+            print 'should have drawn message'
+            time.sleep(message.rest)
+            print 'done resting'
+            ML_INDEX += 1
+            Y_MOVE -= 200
+            print 'Y_MOVE: ' + str(Y_MOVE)
+        else:
+            print 'within else'
+            message = MESSAGE_LIST[ML_INDEX]
+            message.update(Y_MOVE)
+            message.draw()
+            print 'should have drawn message'
+            time.sleep(message.rest)
+            print 'done resting'
+            ML_INDEX += 1
+            Y_MOVE -= 200
+            print 'Y_MOVE: ' + str(Y_MOVE)
     else:
+        canvas.clear()
         message = MESSAGE_LIST[max_index]
-        message.update()
         message.draw()
         print 'should have drawn message'
         time.sleep(120)
