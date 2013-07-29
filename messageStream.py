@@ -185,6 +185,9 @@ class Message(object):
    def update(self, x, y):
        self.x = x
        self.y = y
+       
+   def white(self):
+       self.color = color(255,255,255, 1.0)
 
    # Draw a ball: set the fill color first and draw a circle.
    def draw(self):
@@ -270,8 +273,11 @@ def draw(canvas):
     if ML_INDEX < max_index:
         message = MESSAGE_LIST[ML_INDEX]
         message.draw()
+        # c = message.copy()
         print 'should have drawn message'
         time.sleep(message.rest)
+        # message.white()
+        # message.draw()
         message.update(300, 300)
         message.draw()
         print 'done resting'
