@@ -166,7 +166,7 @@ class Message(object):
        self.body = str(self.sms.body)
        self.date = str(self.sms.createdAt)[:10]
        self.message = ''
-       self.rest = 5
+       self.rest = 0
 
    def form_Message(self):
        if self.number.seller:
