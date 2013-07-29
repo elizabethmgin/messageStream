@@ -157,8 +157,8 @@ class Message(object):
    def __init__(self, sms_id):
        self.width = 900
        self.height = 600
-       self.x = random(WIDTH)
-       self.y = random(HEIGHT)
+       self.x = 300
+       self.y = 100
        self.dx = self.dy = 0.0
        self.color = color(random(), 1, random(0,2), random())
        self.sms_id = sms_id
@@ -188,7 +188,7 @@ class Message(object):
 
    # Draw a ball: set the fill color first and draw a circle.
    def draw(self):
-       text(self.message, x=self.x+self.dx, y=self.y+self.dy, width=self.width,
+       text(self.message, x=self.x, y=self.y, width=self.width,
            font = "Droid Serif", 
            fontsize = 30, 
            fontweight = BOLD,
@@ -263,11 +263,14 @@ def draw(canvas):
     global HEIGHT
     global FRAME
     seed(1)
+    # max_index = len(MESSAGE_LIST) - 1
     # translate(0, HEIGHT-FRAME)
     for message in MESSAGE_LIST:
         # message.update()
         message.draw()
+        print 'should have drawn message'
         time.sleep(message.rest)
+        print 'done resting'
 
 # canvas.fullscreen = True
 # canvas.fps = 1
