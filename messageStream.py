@@ -203,10 +203,8 @@ def get_Image(sms_id):
     woman = Image(path)
     return woman  
     
-global SMS_ID_LIST
-global INDEX
+
 SMS_ID_LIST = []
-INDEX = 0
 for sms in SMS.select().order_by(SMS.createdAt):
     if (sms.number.number != 180):
         if (sms.number.number != 0):
@@ -228,14 +226,15 @@ print SMS_ID_LIST
 
 global MESSAGE_LIST
 MESSAGE_LIST = []
+index = 0
 max_index = len(SMS_ID_LIST) - 1
 in_between = float(11839860)
 for sms in SMS_ID_LIST:
-    if INDEX < max_index:
-        sms_id = SMS_ID_LIST[INDEX][0]
-        current_sms_time = SMS_ID_LIST[INDEX][1]
+    if index < max_index:
+        sms_id = SMS_ID_LIST[index][0]
+        current_sms_time = SMS_ID_LIST[index][1]
         print "CURRENT_SMS_TIME: " + str(current_sms_time)
-        next_index = INDEX + 1
+        next_index = index + 1
         next_sms_time = SMS_ID_LIST[next_index][1]
         sms_interval_real = next_sms_time - current_sms_time
         print "SMS_INTERVAL_REAL: " + str(sms_interval_real)
@@ -246,9 +245,10 @@ for sms in SMS_ID_LIST:
         message = Message(sms_id)
         message.form_Message()
         message.set_Rest(sms_interval_fake)
+        print "MESSAGE REST: " + str(message.rest)
         MESSAGE_LIST.append(message)
         print "MESSAGE_LIST: " + str(MESSAGE_LIST)
-        INDEX += 1
+        index += 1
     else:
         sms_id = SMS_ID_LIST[max_index][0]
         message = Message(sms_id)
@@ -257,20 +257,33 @@ for sms in SMS_ID_LIST:
         MESSAGE_LIST.append(message)
         print "MESSAGE_LIST: " + str(MESSAGE_LIST)
         
-   
+global ML_INDEX
+ML_INDEX = 0
 def draw(canvas):
     global MESSAGE_LIST
     global HEIGHT
     global FRAME
+    global ML_INDEX
     seed(1)
-    # max_index = len(MESSAGE_LIST) - 1
+    max_index = len(MESSAGE_LIST) - 1
     # translate(0, HEIGHT-FRAME)
-    for message in MESSAGE_LIST:
-        # message.update()
+    if ML_INDEX < max_index:
+        message = MESSAGE_LIST[ML_INDEX]
+        message.update()
         message.draw()
         print 'should have drawn message'
         time.sleep(message.rest)
         print 'done resting'
+        ML_INDEX += 1
+    else:
+        message = MESSAGE_LIST[max_index]
+        message.update()
+        message.draw()
+        print 'should have drawn message'
+        time.sleep(120)
+        print 'done resting'
+        sys.exit()
+        
 
 # canvas.fullscreen = True
 # canvas.fps = 1
