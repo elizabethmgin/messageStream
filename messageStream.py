@@ -245,6 +245,7 @@ for sms in SMS_ID_LIST:
         print "SMS_INTERVAL_FAKE: " + str(sms_interval_fake)
         message = Message(sms_id)
         message.form_Message()
+        # R = (sms_interval_fake + 1) / 2 # bring everything closer to one second
         message.set_Rest(sms_interval_fake)
         print "MESSAGE REST: " + str(message.rest)
         MESSAGE_LIST.append(message)
@@ -279,6 +280,8 @@ def draw(canvas):
             message.draw()
             print 'should have drawn message'
             time.sleep(message.rest)
+            print 'MESSAGE: ' + str(message.message)
+            print 'REST: ' + str(message.rest)
             print 'done resting'
             ML_INDEX += 1
             Y_MOVE = 700
@@ -289,6 +292,8 @@ def draw(canvas):
             message.draw()
             print 'should have drawn message'
             time.sleep(message.rest)
+            print 'MESSAGE: ' + str(message.message)
+            print 'REST: ' + str(message.rest)
             print 'done resting'
             ML_INDEX += 1
             Y_MOVE -= 200
@@ -300,6 +305,8 @@ def draw(canvas):
             message.draw()
             print 'should have drawn message'
             time.sleep(message.rest)
+            print 'MESSAGE: ' + str(message.message)
+            print 'REST: ' + str(message.rest)
             print 'done resting'
             ML_INDEX += 1
             Y_MOVE -= 200
