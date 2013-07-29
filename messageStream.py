@@ -145,20 +145,21 @@ class Outbox(BaseModel):
         return '%s // %s // %s // %s' % (self.sent, self.createdAt, self.number, self.body)
     class Meta:
             order_by = ('-sent',)
-            
-speed(30)
-size(400,646)
-            
-def circle(x, y, size):
-   oval(x-size/2, y-size/2, size, size)           
+
+global WIDTH
+global HEIGHT
+WIDTH = 1680
+HEIGHT = 1050
+global FRAME
+FRAME = canvas.frame       
             
 class Message(object):
    def __init__(self, sms_id):
        self.width = 900
        self.height = 600
-       self.x = canvas.width / 3
-       self.y = 100
-       self.dx = self.dy = self.ds = 0.0
+       self.x = random(WIDTH)
+       self.y = random(HEIGHT)
+       self.dx = self.dy = 0.0
        self.color = color(random(), 1, random(0,2), random())
        self.sms_id = sms_id
        self.sms = SMS.get(SMS.id == self.sms_id)
@@ -166,6 +167,7 @@ class Message(object):
        self.body = str(self.sms.body)
        self.date = str(self.sms.createdAt)[:10]
        self.message = ''
+       self.rest = 5
 
    def form_Message(self):
        if self.number.seller:
@@ -176,13 +178,17 @@ class Message(object):
        else:
            self.message = self.date + '\n"' + self.body + '"'
        return self.message
+   
+   def set_Rest(self, rest):
+       self.rest = rest
        
    def update(self):
-       self.x = 600
+       self.dx = sin(FRAME/float(random(1,100))) * 20.0
+       self.dy = cos(FRAME/float(random(1,100))) * 20.0
 
    # Draw a ball: set the fill color first and draw a circle.
    def draw(self):
-       text(self.message, x=self.x, y=self.y, width=self.width,
+       text(self.message, x=self.x+self.dx, y=self.y+self.dy, width=self.width,
            font = "Droid Serif", 
            fontsize = 30, 
            fontweight = BOLD,
@@ -219,13 +225,12 @@ for sms in SMS.select().order_by(SMS.createdAt):
     else:
         print '180'
 print SMS_ID_LIST
-    
-    
-def draw(canvas):
-    global SMS_ID_LIST
-    global INDEX
-    max_index = len(SMS_ID_LIST) - 1
-    in_between = float(11839860)
+
+global MESSAGE_LIST
+MESSAGE_LIST = []
+max_index = len(SMS_ID_LIST) - 1
+in_between = float(11839860)
+for sms in SMS_ID_LIST:
     if INDEX < max_index:
         sms_id = SMS_ID_LIST[INDEX][0]
         current_sms_time = SMS_ID_LIST[INDEX][1]
@@ -240,19 +245,31 @@ def draw(canvas):
         print "SMS_INTERVAL_FAKE: " + str(sms_interval_fake)
         message = Message(sms_id)
         message.form_Message()
-        message.draw()
+        message.set_Rest(sms_interval_fake)
+        MESSAGE_LIST.append(message)
+        print "MESSAGE_LIST: " + str(MESSAGE_LIST)
         INDEX += 1
-        print "SMS_INTERVAL_FAKE: " + str(sms_interval_fake)
-        time.sleep(sms_interval_fake)
-        message.update()
-        message.draw()
     else:
         sms_id = SMS_ID_LIST[max_index][0]
         message = Message(sms_id)
+        message.form_Message()
+        message.set_Rest(sms_interval_fake)
+        MESSAGE_LIST.append(message)
+        print "MESSAGE_LIST: " + str(MESSAGE_LIST)
+        
+   
+def draw(canvas):
+    global MESSAGE_LIST
+    global HEIGHT
+    global FRAME
+    seed(1)
+    # translate(0, HEIGHT-FRAME)
+    for message in MESSAGE_LIST:
+        # message.update()
         message.draw()
-        time.sleep(20)
+        time.sleep(message.rest)
 
 # canvas.fullscreen = True
-canvas.size = 1680, 1050
 # canvas.fps = 1
+canvas.size = WIDTH, HEIGHT
 canvas.run(draw)
