@@ -166,7 +166,7 @@ def circle(x, y, size):
 class Message:
    # Initialize a message -- set all the values to their defaults.
    def __init__(self, sms_id):
-       self.x = random(canvas.width)
+       self.x = 300
        self.y = random(canvas.height)
        self.width = random(200, 300)
        self.height = 300
@@ -193,6 +193,9 @@ class Message:
    def set_Rest(self, rest):
        self.rest = rest
    
+   def set_X(self, x):
+          self.x = x
+   
    # Update the internal state values.
    def update(self):
        #self.dx = self.dx+((random()*320)/300-2)
@@ -214,13 +217,10 @@ for sms in SMS.select().order_by(SMS.createdAt):
         if (sms.number.number != 0):
             if (sms.number.number != 256774712133):
                 if (sms.number.number != 14845575821):
-                    if len(SMS_ID_LIST) < 30:
-                        sms_list = []
-                        sms_list.append(sms.id)
-                        sms_list.append(sms.createdAt)
-                        SMS_ID_LIST.append(sms_list)
-                    else:
-                        break
+                    sms_list = []
+                    sms_list.append(sms.id)
+                    sms_list.append(sms.createdAt)
+                    SMS_ID_LIST.append(sms_list)
                 else:
                     print '14845575821'
             else:
@@ -230,6 +230,15 @@ for sms in SMS.select().order_by(SMS.createdAt):
     else:
         print '180'
 print SMS_ID_LIST
+print len(SMS_ID_LIST)
+max_index = len(SMS_ID_LIST)-1
+first = SMS_ID_LIST[:30]
+second = SMS_ID_LIST[30:60]
+third = SMS_ID_LIST[60:90]
+fourth = SMS_ID_LIST[90:120]
+fifth = SMS_ID_LIST[120:150]
+sixth = SMS_ID_LIST[150:180]
+seventh = SMS_ID_LIST[180:max_index]
 
 messages = []
 index = 0
@@ -261,16 +270,25 @@ def setup(canvas):
            messages.append(message)
            break
             
-
+now = datetime.datetime.now()
 def draw(canvas):
     background(1)
     global messages
+    global now
+    newNow = datetime.datetime.now()
+    print newNow
     seed(1)
     translate(canvas.height-(canvas.frame*3), 100)
     for message in messages:
-        message.update()
-        message.draw()
-    print canvas.height-(canvas.frame*3)
+        seconds = message.rest
+        print seconds
+        past = now + datetime.timedelta(0,seconds)
+        print past
+        if past < newNow:
+            message.update()
+            message.draw()
+    # if canvas.height-(canvas.frame*3) < -600:
+        # canvas.clear()
 
 canvas.fps = 100
 canvas.size = 1080, 764
