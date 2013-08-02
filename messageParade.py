@@ -190,9 +190,6 @@ class Message:
               self.message = self.date + '\n"' + self.body + '"'
           return self.message
    
-   def set_Rest(self, rest):
-       self.rest = rest
-   
    def set_X(self, x):
           self.x = x
    
@@ -232,78 +229,51 @@ for sms in SMS.select().order_by(SMS.createdAt):
 print SMS_ID_LIST
 print len(SMS_ID_LIST)
 max_index = len(SMS_ID_LIST)-1
-first = SMS_ID_LIST[:30]
-second = SMS_ID_LIST[30:60]
-third = SMS_ID_LIST[60:90]
-fourth = SMS_ID_LIST[90:120]
-fifth = SMS_ID_LIST[120:150]
-sixth = SMS_ID_LIST[150:180]
-seventh = SMS_ID_LIST[180:max_index]
 
 messages = []
 index = 0
+start = SMS_ID_LIST[0][1]
 def setup(canvas):
    global messages
    global index
+   global start
    max_index = len(SMS_ID_LIST) - 1
    in_between = float(11839860)
    for sms in SMS_ID_LIST:
        if index < max_index:
            sms_id = SMS_ID_LIST[index][0]
            current_sms_time = SMS_ID_LIST[index][1]
-           next_index = index + 1
-           next_sms_time = SMS_ID_LIST[next_index][1]
-           sms_interval_real = next_sms_time - current_sms_time
-           sms_interval_real_seconds = float(sms_interval_real.total_seconds())
-           sms_interval_fake = (sms_interval_real_seconds/in_between)*float(300)
+           go_time = current_sms_time - start
+           go_time_seconds = float(go_time.total_seconds())
+           print "GO TIME SECONDS: " + str(go_time_seconds)
+           go_x = (go_time_seconds)/float(100)
+           print "GO_X: " + str(go_x)
            message = Message(sms_id)
            message.form_Message()
-           R = (sms_interval_fake + 1) / 2 # bring everything closer to one second
-           message.set_Rest(R)
+           # R = (sms_interval_fake + 1) / 2 # bring everything closer to one second
+           message.set_X(go_x)
            messages.append(message)
            index += 1
        else:
            sms_id = SMS_ID_LIST[max_index][0]
+           current_sms_time = SMS_ID_LIST[index][1]
+           go_time = current_sms_time - start
+           go_time_seconds = float(go_time.total_seconds())
+           print "GO TIME SECONDS: " + str(go_time_seconds)
+           go_x = (go_time_seconds)/float(100)
            message = Message(sms_id)
            message.form_Message()
-           message.set_Rest(20)
+           message.set_X(go_x)
            messages.append(message)
            break
         
-now = datetime.datetime.now()
+
 def draw(canvas):
     background(1)
     global messages
-    global now
-    newNow = datetime.datetime.now()
-    print newNow
     seed(1)
     translate(canvas.height-(canvas.frame*3), 100)
-    for message in messages[:10]:
-        message.update()
-        message.draw()
-    for message in messages[10:20]:
-        message.set_X(500)
-        message.update()
-        message.draw()
-    for message in messages[20:30]:
-        message.set_X(700)
-        message.update()
-        message.draw()
-    for message in messages[30:40]:
-        message.set_X(900)
-        message.update()
-        message.draw()
-    for message in messages[40:50]:
-        message.set_X(1100)
-        message.update()
-        message.draw()
-    for message in messages[50:60]:
-        message.set_X(1300)
-        message.update()
-        message.draw()
-    for message in messages[70:80]:
-        message.set_X(1500)
+    for message in messages:
         message.update()
         message.draw()
     # if canvas.height-(canvas.frame*3) < -600:
