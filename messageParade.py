@@ -269,17 +269,24 @@ def setup(canvas):
            message.set_Rest(20)
            messages.append(message)
            break
-            
+
+y = 20
+z = 0          
 now = datetime.datetime.now()
 def draw(canvas):
     background(1)
     global messages
     global now
+    global y
+    global z
     newNow = datetime.datetime.now()
     print newNow
     seed(1)
     translate(canvas.height-(canvas.frame*3), 100)
-    for message in messages:
+    x = 0
+    if (z%100)==0:
+        y += 20
+    for message in messages[x:y]:
         seconds = message.rest
         print seconds
         past = now + datetime.timedelta(0,seconds)
@@ -287,6 +294,7 @@ def draw(canvas):
         if past < newNow:
             message.update()
             message.draw()
+    z += 1
     # if canvas.height-(canvas.frame*3) < -600:
         # canvas.clear()
 
