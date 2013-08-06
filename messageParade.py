@@ -177,6 +177,7 @@ class Message:
        self.number = Number.get(Number.number == self.sms.number.number)
        self.body = str(self.sms.body)
        self.date = str(self.sms.createdAt)[:10]
+       self.createdAt = self.sms.createdAt
        self.message = ''
        self.rest = 0
        
@@ -185,9 +186,9 @@ class Message:
               givenName = str(self.number.seller.givenName)
               familyName = str(self.number.seller.familyName)
               name = givenName + ' ' + familyName
-              self.message = self.date + '\n' + str(name) + ' : "' + self.body + '"'
+              self.message = self.date + '\n' + str(name) + ': ' + self.body + ''
           else:
-              self.message = self.date + '\n"' + self.body + '"'
+              self.message = self.date + '\n' + self.body
           return self.message
    
    def set_X(self, x):
@@ -197,8 +198,8 @@ class Message:
    def update(self):
        #self.dx = self.dx+((random()*320)/300-2)
        #self.dy = self.dy+((random()*280)/300-2)
-       self.dx = sin(canvas.frame/float(random(1,100))) * 20.0
-       self.dy = cos(canvas.frame/float(random(1,100))) * 20.0
+       #self.dx = sin(canvas.frame/float(random(1,100))) * 20.0
+       #self.dy = cos(canvas.frame/float(random(1,100))) * 20.0
        #self.dw = cos(canvas.frame/float(random(1,123))) * 10.0
        self.color = color(random(), random(), random(0,2), 1.0)
    
@@ -233,7 +234,6 @@ max_index = len(SMS_ID_LIST)-1
 messages = []
 index = 0
 start = SMS_ID_LIST[0][1]
-startDate = str(start)[:10]
 def setup(canvas):
    global messages
    global index
@@ -267,18 +267,41 @@ def setup(canvas):
            message.set_X(go_x)
            messages.append(message)
            break
-        
+
+messages1 = messages[:30]
+messages2 = messages[30:60]
+startDate = SMS_ID_LIST[0][1]
 def draw(canvas):
     background(1)
     global messages
     global startDate
     seed(1)
     #translate(0,howdy)
-    translate(100,canvas.height-canvas.frame)
+    translate(canvas.height-canvas.frame,0)
     for message in messages:
-        if message.date == startDate:
+        print 'within for messages loop'
+        if (message.createdAt.day == startDate.day) and (message.createdAt.month == startDate.month):
+            print 'within if messages loop'
+            print 'MESSAGE CREATED AT DAY: ' + str(message.createdAt.day)
+            print 'MESSAGE CREATED AT MONTH: ' + str(message.createdAt.month)
+            print 'START DAY: ' + str(startDate.day)
+            print 'START MONTH: ' + str(startDate.month)
+            print canvas.height-canvas.frame
+            print canvas.x
+            print canvas.y
             message.update()
             message.draw()
+    if (canvas.height-canvas.frame) == 700:
+        'within if canvas == 700 loop'
+        canvas.stop()
+        startDate += datetime.timedelta(days=1)
+        print 'Hooray!'
+        print str(startDate)
+        
+        
+            
+            
+            
     # if canvas.height-(canvas.frame*3) < -600:
         # canvas.clear()
 
