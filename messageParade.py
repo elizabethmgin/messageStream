@@ -14,7 +14,7 @@ import datetime, time
 ROLE_USER = 0
 ROLE_ADMIN = 1
 
-DATABASE = '../_databaseFiles/Uganda07222013.db'
+DATABASE = '../_databaseFiles/Uganda08032013.db'
 database = SqliteDatabase(DATABASE, threadlocals=True)
 database.connect()
 
@@ -168,7 +168,7 @@ class Message:
    def __init__(self, sms_id):
        self.x = 300
        self.y = random(canvas.height)
-       self.width = random(200, 300)
+       self.width = 300
        self.height = 300
        self.dx = self.dy = self.dw = 0.0
        self.color = color(random(), 1, random(0,2), random())
@@ -199,13 +199,13 @@ class Message:
        #self.dy = self.dy+((random()*280)/300-2)
        self.dx = sin(canvas.frame/float(random(1,100))) * 20.0
        self.dy = cos(canvas.frame/float(random(1,100))) * 20.0
-       self.dw = cos(canvas.frame/float(random(1,123))) * 10.0
+       #self.dw = cos(canvas.frame/float(random(1,123))) * 10.0
        self.color = color(random(), random(), random(0,2), 1.0)
    
    # Draw a message: set the fill color first and draw a circle.
    def draw(self):
        # fill(self.color)
-       text(self.message, x=(self.x + self.dx), y=(self.y + self.dy), width=(self.width + self.dw), font="Arial", fontsize=12, fontweight=BOLD, lineheight = 1.2, fill=self.color)
+       text(self.message, x=(self.x + self.dx), y=(self.y + self.dy), width=(self.width), font="Arial", fontsize=12, fontweight=BOLD, lineheight = 1.2, fill=self.color)
        
        
 SMS_ID_LIST = []
@@ -233,6 +233,7 @@ max_index = len(SMS_ID_LIST)-1
 messages = []
 index = 0
 start = SMS_ID_LIST[0][1]
+startDate = str(start)[:10]
 def setup(canvas):
    global messages
    global index
@@ -267,15 +268,17 @@ def setup(canvas):
            messages.append(message)
            break
         
-
 def draw(canvas):
     background(1)
     global messages
+    global startDate
     seed(1)
-    translate(canvas.height-(canvas.frame*3), 100)
+    #translate(0,howdy)
+    translate(100,canvas.height-canvas.frame)
     for message in messages:
-        message.update()
-        message.draw()
+        if message.date == startDate:
+            message.update()
+            message.draw()
     # if canvas.height-(canvas.frame*3) < -600:
         # canvas.clear()
 
