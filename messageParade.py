@@ -275,33 +275,31 @@ def messagePack(s,e):
     return messagePortion
     
 startDate = SMS_ID_LIST[0][1]
+canvasStart = 900
+messageStart = 0
+messageNext = 25
 def draw(canvas):
     background(1)
-    global messages
     global startDate
+    global canvasStart
+    global messageStart
+    global messageNext
     seed(1)
     #translate(0,howdy)
     translate(canvas.height-canvas.frame,0)
-    for message in messages:
+    if (canvas.height-canvas.frame) == canvasStart:
+        canvasStart = canvasStart - 300
+        messageStart += 25
+        messageNext +=25
+        messagePortion = messagePack(messageStart,messageNext)
+    else:
+        canvasStart = canvasStart
+        messagePortion = messagePack(messageStart,messageNext)
+    for message in messagePortion:
         print 'within for messages loop'
-        if (message.createdAt.day == startDate.day) and (message.createdAt.month == startDate.month):
-            print 'within if messages loop'
-            print 'MESSAGE CREATED AT DAY: ' + str(message.createdAt.day)
-            print 'MESSAGE CREATED AT MONTH: ' + str(message.createdAt.month)
-            print 'START DAY: ' + str(startDate.day)
-            print 'START MONTH: ' + str(startDate.month)
-            print canvas.height-canvas.frame
-            print canvas.x
-            print canvas.y
-            message.update()
-            message.draw()
-    if (canvas.height-canvas.frame) == 700:
-        canvas.setup()
-        'within if canvas == 700 loop'
-        canvas.stop()
-        startDate += datetime.timedelta(days=1)
-        print 'Hooray!'
-        print str(startDate)
+        message.update()
+        message.draw()
+    
         
         
             

@@ -166,7 +166,7 @@ def circle(x, y, size):
 class Message:
    # Initialize a message -- set all the values to their defaults.
    def __init__(self, sms_id):
-       self.x = 300
+       self.x = random(canvas.width)
        self.y = random(canvas.height)
        self.width = 200
        self.height = 300
@@ -271,26 +271,25 @@ def setup(canvas):
            break
 
 startDate = SMS_ID_LIST[0][1]
+global messageStart
+global messageNext
+messageStart = 0
+messageNext = 25
 def draw(canvas):
     background(1)
     global messages
-    global startDate
+    global messageStart
+    global messageNext
     seed(1)
     #translate(0,howdy)
-    translate(canvas.height-canvas.frame,0)
-    for message in messages[:30]:
+    #translate(canvas.height-canvas.frame,0)
+    for message in messages[messageStart:messageNext]:
         print 'within for messages loop'
-        #if (message.createdAt.day == startDate.day) and (message.createdAt.month == startDate.month):
-        #    print 'within if messages loop'
-        #    print 'MESSAGE CREATED AT DAY: ' + str(message.createdAt.day)
-        #    print 'MESSAGE CREATED AT MONTH: ' + str(message.createdAt.month)
-        #    print 'START DAY: ' + str(startDate.day)
-        #    print 'START MONTH: ' + str(startDate.month)
-        #    print canvas.height-canvas.frame
-        #    print canvas.x
-        #    print canvas.y
-        message.update()
+        #message.update()
         message.draw()
+    #time.sleep(10)
+    messageStart += 25
+    messageNext +=25
     #if (canvas.height-canvas.frame) == 700:
     #    'within if canvas == 700 loop'
     #    canvas.stop()
