@@ -14,7 +14,7 @@ import datetime, time
 ROLE_USER = 0
 ROLE_ADMIN = 1
 
-DATABASE = '../_databaseFiles/Uganda08032013.db'
+DATABASE = '../_databaseFiles/Uganda08082013.db'
 database = SqliteDatabase(DATABASE, threadlocals=True)
 database.connect()
 
@@ -186,20 +186,21 @@ class Message:
               givenName = str(self.number.seller.givenName)
               familyName = str(self.number.seller.familyName)
               name = givenName + ' ' + familyName
-              self.message = self.date + '\n' + str(name) + ': ' + self.body + ''
+              self.message = str(name) + ': ' + self.body + '\nReceived: ' + self.date
           else:
-              self.message = self.date + '\n' + self.body
+              self.message = self.body + '\nReceived: ' + self.date
           return self.message
    
    # Update the internal state values.
    def update(self):
        self.dx = self.dx-30
-       self.color = color(random()*.3, random()*.3, random()*.3, random())
+       #self.color = color(random()*.3, random()*.3, random()*.3, random(.8,1.0))
+       self.color = color(random(), 122, random(150,200), 1.0)
    
    # Draw a message: set the fill color first and draw a circle.
    def draw(self):
        # fill(self.color)
-       text(self.message, x=(self.x + self.dx), y=(self.y + self.dy), width=(self.width), font="Arial", fontsize=12, fontweight=BOLD, lineheight = 1.2, fill=self.color)
+       text(self.message, x=(self.x + self.dx), y=(self.y + self.dy), width=(self.width), font="Arial", fontsize=14, fontweight=BOLD, lineheight = 1.5, fill=self.color)
        
        
 SMS_ID_LIST = []
@@ -208,10 +209,16 @@ for sms in SMS.select().order_by(SMS.createdAt):
         if (sms.number.number != 0):
             if (sms.number.number != 256774712133):
                 if (sms.number.number != 14845575821):
-                    sms_list = []
-                    sms_list.append(sms.id)
-                    sms_list.append(sms.createdAt)
-                    SMS_ID_LIST.append(sms_list)
+                    if (sms.number.number != 256777738226):
+                        if (sms.number.number != 256775576582):
+                            sms_list = []
+                            sms_list.append(sms.id)
+                            sms_list.append(sms.createdAt)
+                            SMS_ID_LIST.append(sms_list)
+                        else:
+                            print '256775576582'
+                    else:
+                        print '256777738226'
                 else:
                     print '14845575821'
             else:
@@ -243,7 +250,7 @@ def setup(canvas):
            print "GO TIME SECONDS: " + str(go_time_seconds)
            message = Message(sms_id)
            message.form_Message()
-           message.dx = 0.0007*go_time_seconds
+           message.dx = 0.007*go_time_seconds
            messages.append(message)
            index += 1
        else:
