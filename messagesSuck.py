@@ -14,7 +14,7 @@ import datetime, time
 ROLE_USER = 0
 ROLE_ADMIN = 1
 
-DATABASE = '../_databaseFiles/Uganda08032013.db'
+DATABASE = '../_databaseFiles/Uganda08062013.db'
 database = SqliteDatabase(DATABASE, threadlocals=True)
 database.connect()
 
@@ -166,18 +166,17 @@ def circle(x, y, size):
 class Message:
    # Initialize a message -- set all the values to their defaults.
    def __init__(self, sms_id):
-       self.x = random(canvas.width)
+       self.x = 300
        self.y = random(canvas.height)
-       self.width = 200
+       self.width = 250
        self.height = 300
        self.dx = self.dy = self.dw = 0.0
-       self.color = color(random(), 100, random(0,2), 1.0)
+       self.color = color(random(), 1, random(0,2), random())
        self.sms_id = sms_id
        self.sms = SMS.get(SMS.id == self.sms_id)
        self.number = Number.get(Number.number == self.sms.number.number)
        self.body = str(self.sms.body)
        self.date = str(self.sms.createdAt)[:10]
-       self.createdAt = self.sms.createdAt
        self.message = ''
        self.rest = 0
        
@@ -186,9 +185,9 @@ class Message:
               givenName = str(self.number.seller.givenName)
               familyName = str(self.number.seller.familyName)
               name = givenName + ' ' + familyName
-              self.message = self.date + '\n' + str(name) + ': ' + self.body + ''
+              self.message = str(name) + ': ' + self.body + '\n' + self.date
           else:
-              self.message = self.date + '\n' + self.body
+              self.message = self.body + '\n' + self.date
           return self.message
    
    def set_X(self, x):
@@ -201,7 +200,6 @@ class Message:
        #self.dx = sin(canvas.frame/float(random(1,100))) * 20.0
        #self.dy = cos(canvas.frame/float(random(1,100))) * 20.0
        #self.dw = cos(canvas.frame/float(random(1,123))) * 10.0
-       #self.color = color(random(), random(), random(0,2), 1.0)
        self.color = color(random(), 100, random(0,2), 1.0)
    
    # Draw a message: set the fill color first and draw a circle.
@@ -235,8 +233,8 @@ max_index = len(SMS_ID_LIST)-1
 messages = []
 index = 0
 start = SMS_ID_LIST[0][1]
+startDate = str(start)[:10]
 def setup(canvas):
-   print 'WITHIN SETUP'
    global messages
    global index
    global start
@@ -269,38 +267,17 @@ def setup(canvas):
            message.set_X(go_x)
            messages.append(message)
            break
-
-startDate = SMS_ID_LIST[0][1]
-global messageStart
-global messageNext
-messageStart = 0
-messageNext = 25
+        
 def draw(canvas):
     background(1)
     global messages
-    global messageStart
-    global messageNext
+    global startDate
     seed(1)
     #translate(0,howdy)
-    #translate(canvas.height-canvas.frame,0)
-    for message in messages[messageStart:messageNext]:
-        print 'within for messages loop'
-        #message.update()
+    translate(canvas.height-canvas.frame,0)
+    for message in messages[0:20]:
+        message.update()
         message.draw()
-    time.sleep(10)
-    messageStart += 25
-    messageNext +=25
-    #if (canvas.height-canvas.frame) == 700:
-    #    'within if canvas == 700 loop'
-    #    canvas.stop()
-    #    startDate += datetime.timedelta(days=1)
-    #    print 'Hooray!'
-    #    print str(startDate)
-        
-        
-            
-            
-            
     # if canvas.height-(canvas.frame*3) < -600:
         # canvas.clear()
 
