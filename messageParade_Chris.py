@@ -166,7 +166,7 @@ def circle(x, y, size):
 class Message:
    # Initialize a message -- set all the values to their defaults.
    def __init__(self, sms_id):
-       self.x = 300
+       self.x = canvas.width
        self.y = random(canvas.height)
        self.width = 300
        self.height = 300
@@ -191,17 +191,10 @@ class Message:
               self.message = self.date + '\n' + self.body
           return self.message
    
-   def set_X(self, x):
-          self.x = x
-   
    # Update the internal state values.
    def update(self):
-       #self.dx = self.dx+((random()*320)/300-2)
-       #self.dy = self.dy+((random()*280)/300-2)
-       #self.dx = sin(canvas.frame/float(random(1,100))) * 20.0
-       #self.dy = cos(canvas.frame/float(random(1,100))) * 20.0
-       #self.dw = cos(canvas.frame/float(random(1,123))) * 10.0
-       self.color = color(random(), random(), random(0,2), 1.0)
+       self.dx = self.dx-30
+       self.color = color(random()*.3, random()*.3, random()*.3, random())
    
    # Draw a message: set the fill color first and draw a circle.
    def draw(self):
@@ -232,6 +225,7 @@ print len(SMS_ID_LIST)
 max_index = len(SMS_ID_LIST)-1
 
 messages = []
+current_messages = []
 index = 0
 start = SMS_ID_LIST[0][1]
 def setup(canvas):
@@ -247,12 +241,9 @@ def setup(canvas):
            go_time = current_sms_time - start
            go_time_seconds = float(go_time.total_seconds())
            print "GO TIME SECONDS: " + str(go_time_seconds)
-           go_x = (go_time_seconds)/float(100)
-           print "GO_X: " + str(go_x)
            message = Message(sms_id)
            message.form_Message()
-           # R = (sms_interval_fake + 1) / 2 # bring everything closer to one second
-           message.set_X(go_x)
+           message.dx = 0.0007*go_time_seconds
            messages.append(message)
            index += 1
        else:
@@ -264,7 +255,7 @@ def setup(canvas):
            go_x = (go_time_seconds)/float(100)
            message = Message(sms_id)
            message.form_Message()
-           message.set_X(go_x)
+           message.dx = 0.007*go_time_seconds
            messages.append(message)
            break
 
@@ -275,30 +266,16 @@ def draw(canvas):
     global startDate
     seed(1)
     #translate(0,howdy)
-    translate(canvas.height-canvas.frame,0)
+    #translate(canvas.width-canvas.frame,0)
     for message in messages:
+        message.update()
         print 'within for messages loop'
-        if (message.createdAt.day == startDate.day) and (message.createdAt.month == startDate.month):
-            print 'within if messages loop'
-            print 'MESSAGE CREATED AT DAY: ' + str(message.createdAt.day)
-            print 'MESSAGE CREATED AT MONTH: ' + str(message.createdAt.month)
-            print 'START DAY: ' + str(startDate.day)
-            print 'START MONTH: ' + str(startDate.month)
-            print canvas.height-canvas.frame
-            print canvas.x
-            print canvas.y
-            message.update()
+        if message.x < canvas.width+100 and message.x > -100:
             message.draw()
-    if (canvas.height-canvas.frame) == 700:
-        'within if canvas == 700 loop'
-        canvas.stop()
-        startDate += datetime.timedelta(days=1)
-        print 'Hooray!'
-        print str(startDate)
         
         
             
 
 canvas.fps = 100
-canvas.size = 1080, 764
+canvas.size = 1680, 1050
 canvas.run(draw, setup)
