@@ -14,7 +14,7 @@ import datetime, time
 ROLE_USER = 0
 ROLE_ADMIN = 1
 
-DATABASE = '../_databaseFiles/Uganda08082013.db'
+DATABASE = '../_databaseFiles/Uganda08132013.db'
 database = SqliteDatabase(DATABASE, threadlocals=True)
 database.connect()
 
@@ -168,7 +168,7 @@ class Message:
    def __init__(self, sms_id):
        self.x = canvas.width
        self.y = random(canvas.height)
-       self.width = 300
+       self.width = 450
        self.height = 300
        self.dx = self.dy = self.dw = 0.0
        self.color = color(random(), 1, random(0,2), random())
@@ -200,7 +200,7 @@ class Message:
    # Draw a message: set the fill color first and draw a circle.
    def draw(self):
        # fill(self.color)
-       text(self.message, x=(self.x + self.dx), y=(self.y + self.dy), width=(self.width), font="Arial", fontsize=14, fontweight=BOLD, lineheight = 1.5, fill=self.color)
+       text(self.message, x=(self.x + self.dx), y=(self.y + self.dy), width=(self.width), font="Arial", fontsize=24, fontweight=BOLD, lineheight = 1.2, fill=self.color)
        
        
 SMS_ID_LIST = []
@@ -211,10 +211,13 @@ for sms in SMS.select().order_by(SMS.createdAt):
                 if (sms.number.number != 14845575821):
                     if (sms.number.number != 256777738226):
                         if (sms.number.number != 256775576582):
-                            sms_list = []
-                            sms_list.append(sms.id)
-                            sms_list.append(sms.createdAt)
-                            SMS_ID_LIST.append(sms_list)
+                            if (sms.number.number != 256784901764):
+                                sms_list = []
+                                sms_list.append(sms.id)
+                                sms_list.append(sms.createdAt)
+                                SMS_ID_LIST.append(sms_list)
+                            else:
+                                print '256784901764'
                         else:
                             print '256775576582'
                     else:
@@ -283,6 +286,6 @@ def draw(canvas):
         
             
 
-canvas.fps = 100
+canvas.fps = 24
 canvas.size = 1680, 1050
 canvas.run(draw, setup)
